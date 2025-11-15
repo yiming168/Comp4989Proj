@@ -7,7 +7,6 @@ from sklearn.metrics import f1_score
 import numpy as np
 
 DATA_ROOT = "dataset"
-NUM_CLASSES = 4
 BATCH_SIZE = 16
 NUM_EPOCHS = 15
 LR = 1e-4
@@ -49,7 +48,9 @@ test_loader  = DataLoader(test_dataset, batch_size=BATCH_SIZE,
                           shuffle=False, num_workers=2)
 
 class_names = train_dataset.classes
-print("Classes:", class_names)
+NUM_CLASSES = len(class_names)
+print("Detected classes:", class_names)
+print("NUM_CLASSES:", NUM_CLASSES)
 
 # 3. calculate class weights for weighted cross-entropy
 class_counts = np.bincount(train_dataset.targets)
