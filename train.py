@@ -78,7 +78,6 @@ def run_epoch(loader, train: bool):
         model.train()
     else:
         model.eval()
-
     all_preds = []
     all_labels = []
     running_loss = 0.0
@@ -109,25 +108,31 @@ def run_epoch(loader, train: bool):
 
     return epoch_loss, acc, macro_f1
 
-best_val_f1 = 0.0
-best_model_path = "best_model.pth"
 
-for epoch in range(1, NUM_EPOCHS + 1):
-    train_loss, train_acc, train_f1 = run_epoch(train_loader, train=True)
-    val_loss, val_acc, val_f1 = run_epoch(val_loader, train=False)
+def main() -> None:
+    best_val_f1 = 0.0
+    best_model_path = "best_model.pth"
 
-    print(f"Epoch {epoch:02d}:")
-    print(f"  Train: loss={train_loss:.4f}, acc={train_acc:.3f}, macroF1={train_f1:.3f}")
-    print(f"  Val  : loss={val_loss:.4f}, acc={val_acc:.3f}, macroF1={val_f1:.3f}")
+    for epoch in range(1, NUM_EPOCHS + 1):
+        train_loss, train_acc, train_f1 = run_epoch(train_loader, train=True)
+        val_loss, val_acc, val_f1 = run_epoch(val_loader, train=False)
 
-    if val_f1 > best_val_f1:
-        best_val_f1 = val_f1
-        torch.save(model.state_dict(), best_model_path)
-        print(f"  >> New best model saved with val macroF1={best_val_f1:.3f}")
+        print(f"Epoch {epoch:02d}:")
+        print(f"  Train: loss={train_loss:.4f}, acc={train_acc:.3f}, macroF1={train_f1:.3f}")
+        print(f"  Val  : loss={val_loss:.4f}, acc={val_acc:.3f}, macroF1={val_f1:.3f}")
 
-print("Training done. Best val macroF1:", best_val_f1)
+        if val_f1 > best_val_f1:
+            best_val_f1 = val_f1
+            torch.save(model.state_dict(), best_model_path)
+            print(f"  >> New best model saved with val macroF1={best_val_f1:.3f}")
 
-# 6. evaluate on test set
-model.load_state_dict(torch.load(best_model_path, map_location=DEVICE))
-test_loss, test_acc, test_f1 = run_epoch(test_loader, train=False)
-print(f"Test: loss={test_loss:.4f}, acc={test_acc:.3f}, macroF1={test_f1:.3f}")
+    print("Training done. Best val macroF1:", best_val_f1)
+
+    # 6. evaluate on test set
+    model.load_state_dict(torch.load(best_model_path, map_location=DEVICE))
+    test_loss, test_acc, test_f1 = run_epoch(test_loader, train=False)
+    print(f"Test: loss={test_loss:.4f}, acc={test_acc:.3f}, macroF1={test_f1:.3f}")
+
+
+if __name__ == "__main__":
+    main()
