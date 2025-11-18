@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # grad_cam.py
+# python grad_cam.py --image test/image.png --weights best_model.pth --data_root dataset
+
 
 import argparse
 from pathlib import Path
