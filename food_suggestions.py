@@ -23,6 +23,11 @@ import google.generativeai as genai
 
 # Map model class names to deficiency types and descriptions
 DEFICIENCY_MAP = {
+    "Class_00_Unrelated_Control": {
+        "deficiency": None,
+        "symptom": "No deficiency detected",
+        "description": "No nutritional deficiency detected - unrelated/healthy condition"
+    },
     "Class_01_Vitamin_A_Bitots_Spot": {
         "deficiency": "Vitamin A",
         "symptom": "Bitot's Spots (eye condition)",
@@ -33,15 +38,35 @@ DEFICIENCY_MAP = {
         "symptom": "Koilonychia (spoon-shaped nails)",
         "description": "Iron deficiency indicated by koilonychia (spoon-shaped nails)"
     },
-    "Class_03_B_Vitamin_Glossitis": {
+    "Class_03_Vitamin_B_Glossitis": {
         "deficiency": "B Vitamins",
         "symptom": "Glossitis (tongue inflammation)",
         "description": "B vitamin deficiency indicated by glossitis (tongue inflammation)"
     },
-    "Class_04_Healthy_Control": {
-        "deficiency": None,
-        "symptom": "No deficiency detected",
-        "description": "No nutritional deficiency detected - healthy condition"
+    "Class_04_Vitamin_B_Angular_Cheilitis": {
+        "deficiency": "B Vitamins",
+        "symptom": "Angular Cheilitis (mouth corner cracks)",
+        "description": "B vitamin deficiency indicated by angular cheilitis (cracks at mouth corners)"
+    },
+    "Class_05_Vitamin_C_Gums": {
+        "deficiency": "Vitamin C",
+        "symptom": "Gum problems (bleeding/swollen gums)",
+        "description": "Vitamin C deficiency indicated by gum problems (bleeding, swelling, or inflammation)"
+    },
+    "Class_06_Vitamin_A_Keratosis_Pilaris": {
+        "deficiency": "Vitamin A",
+        "symptom": "Keratosis Pilaris (bumpy skin)",
+        "description": "Vitamin A deficiency indicated by keratosis pilaris (bumpy, rough skin patches)"
+    },
+    "Class_07_Vitamin_B3_Pellagra": {
+        "deficiency": "Vitamin B3 (Niacin)",
+        "symptom": "Pellagra (skin rash/dermatitis)",
+        "description": "Vitamin B3 (niacin) deficiency indicated by pellagra (dermatitis, diarrhea, dementia symptoms)"
+    },
+    "Class_08_Zinc_Deficiency_Acrodermatitis": {
+        "deficiency": "Zinc",
+        "symptom": "Acrodermatitis (skin inflammation)",
+        "description": "Zinc deficiency indicated by acrodermatitis (skin inflammation, especially on extremities)"
     }
 }
 

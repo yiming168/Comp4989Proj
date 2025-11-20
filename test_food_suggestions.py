@@ -16,10 +16,15 @@ def test_prompt_generation():
     print("=" * 60)
     
     test_cases = [
+        ("Class_00_Unrelated_Control", 0.95),
         ("Class_01_Vitamin_A_Bitots_Spot", 0.85),
         ("Class_02_Iron_Koilonychia", 0.92),
-        ("Class_03_B_Vitamin_Glossitis", 0.78),
-        ("Class_04_Healthy_Control", 0.95),
+        ("Class_03_Vitamin_B_Glossitis", 0.78),
+        ("Class_04_Vitamin_B_Angular_Cheilitis", 0.82),
+        ("Class_05_Vitamin_C_Gums", 0.88),
+        ("Class_06_Vitamin_A_Keratosis_Pilaris", 0.75),
+        ("Class_07_Vitamin_B3_Pellagra", 0.80),
+        ("Class_08_Zinc_Deficiency_Acrodermatitis", 0.90),
     ]
     
     for pred_class, confidence in test_cases:
