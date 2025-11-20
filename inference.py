@@ -4,6 +4,18 @@
 import argparse, json, pathlib
 import cv2
 from typing import List, Optional
+from pathlib import Path
+
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    env_path = Path(__file__).parent / '.env'
+    if env_path.exists():
+        load_dotenv(env_path)
+except ImportError:
+    # python-dotenv not installed, will use environment variables only
+    pass
+
 import torch
 from torch import nn
 from torchvision import datasets, transforms, models
@@ -117,18 +129,6 @@ def main():
     class_names = load_classes()
     model = load_model(class_names)
 
-    results = []
-    for p in paths:
-        res = predict(model, class_names, p)
-        if args.grad_cam:
-            target_idx = class_names.index(res["pred_class"])
-            cam_path = generate_grad_cam(model, p, target_idx)
-            res["grad_cam"] = str(cam_path)
-            print(f"Grad-CAM saved to: {cam_path}")
-        results.append(res)
-
-    for r in results:
-        print(json.dumps(r, indent=2))
     # Initialize AI model if suggestions are requested
     ai_model = None
     if args.suggestions:
@@ -144,6 +144,13 @@ def main():
     results = []
     for path in paths:
         result = predict(model, class_names, path)
+        
+        # Generate Grad-CAM if requested
+        if args.grad_cam:
+            target_idx = class_names.index(result["pred_class"])
+            cam_path = generate_grad_cam(model, path, target_idx)
+            result["grad_cam"] = str(cam_path)
+            print(f"Grad-CAM saved to: {cam_path}")
         
         # Add food suggestions if requested
         if args.suggestions and ai_model:

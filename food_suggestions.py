@@ -6,6 +6,18 @@ Uses AI Studio (Google Gemini API) to generate food suggestions based on nutriti
 import os
 import json
 from typing import Dict, Optional, List
+from pathlib import Path
+
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    env_path = Path(__file__).parent / '.env'
+    if env_path.exists():
+        load_dotenv(env_path)
+except ImportError:
+    # python-dotenv not installed, will use environment variables only
+    pass
+
 import google.generativeai as genai
 
 
@@ -93,15 +105,33 @@ def initialize_ai_client(api_key: Optional[str] = None) -> genai.GenerativeModel
     
     if not api_key:
         raise ValueError(
-            "API key not found. Please set GEMINI_API_KEY environment variable "
+            "API key not found. Please set GEMINI_API_KEY in .env file or environment variable "
             "or pass api_key parameter. Get your key from: https://ai.google.dev/aistudio/"
         )
     
     genai.configure(api_key=api_key)
     
-    # Use Gemini Pro model
-    model = genai.GenerativeModel('gemini-pro')
-    return model
+    # Use Gemini 2.5 Flash (fast and efficient) or fallback to latest versions
+    # Model names need to match exactly what's available in the API
+    model_names = [
+        'gemini-2.5-flash',      # Fast and efficient
+        'gemini-2.5-pro',        # More capable
+        'gemini-flash-latest',   # Latest flash
+        'gemini-pro-latest',     # Latest pro
+    ]
+    
+    for model_name in model_names:
+        try:
+            model = genai.GenerativeModel(model_name)
+            return model
+        except Exception as e:
+            if model_name == model_names[-1]:
+                # Last model failed, raise error
+                raise ValueError(
+                    f"Failed to initialize any Gemini model. Tried: {model_names}. "
+                    f"Last error: {str(e)}. Please check your API key and available models."
+                )
+            continue
 
 
 def get_food_suggestions(
