@@ -3,4 +3,5 @@ torchvision
 numpy
 opencv-python
 Pillow
-scikit-learn 
+scikit-learn
+google-generativeai 
