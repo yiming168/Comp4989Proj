@@ -3,9 +3,12 @@ torchvision
 numpy
 opencv-python
 Pillow
-scikit-learn 
+scikit-learn
 google-generativeai
-python-dotenv 
+python-dotenv
 onnxruntime
 onnx
 onnxscript
+fastapi
+uvicorn[standard]
+python-multipart
