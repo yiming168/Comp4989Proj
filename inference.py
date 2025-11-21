@@ -23,7 +23,12 @@ from PIL import Image
 from grad_cam import GradCAM, overlay_heatmap, denormalize_to_uint8
 
 try:
-    from food_suggestions import get_food_suggestions, format_suggestions_output, initialize_ai_client
+    from food_suggestions import (
+        get_food_suggestions,
+        format_suggestions_output,
+        initialize_ai_client,
+        get_deficiency_info,
+    )
     FOOD_SUGGESTIONS_AVAILABLE = True
 except ImportError:
     FOOD_SUGGESTIONS_AVAILABLE = False
@@ -31,6 +36,7 @@ except ImportError:
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DATA_ROOT = "dataset/train"  # only to read class names
 WEIGHTS = "best_model.pth"
+SUGGESTION_THRESHOLD = 0.20  # minimum predicted probability to trigger food suggestions
 
 eval_tfm = transforms.Compose([
     transforms.Resize((256, 256)),
@@ -154,17 +160,29 @@ def main():
         
         # Add food suggestions if requested
         if args.suggestions and ai_model:
-            try:
-                suggestions_result = get_food_suggestions(
-                    result["pred_class"],
-                    result["confidence"],
-                    api_key=args.api_key,
-                    model=ai_model
-                )
-                result["food_suggestions"] = suggestions_result["suggestions"]
-                result["deficiency_info"] = suggestions_result["deficiency_info"]
-            except Exception as e:
-                result["food_suggestions_error"] = str(e)
+            deficiency_info = get_deficiency_info(result["pred_class"])
+            meets_threshold = result["confidence"] >= SUGGESTION_THRESHOLD
+            has_deficiency = deficiency_info.get("deficiency") is not None
+
+            if meets_threshold and has_deficiency:
+                try:
+                    suggestions_result = get_food_suggestions(
+                        result["pred_class"],
+                        result["confidence"],
+                        api_key=args.api_key,
+                        model=ai_model
+                    )
+                    result["food_suggestions"] = suggestions_result["suggestions"]
+                    result["deficiency_info"] = suggestions_result["deficiency_info"]
+                except Exception as e:
+                    result["food_suggestions_error"] = str(e)
+            else:
+                reason = []
+                if not meets_threshold:
+                    reason.append(f"confidence {result['confidence']:.2f} < {SUGGESTION_THRESHOLD:.2f}")
+                if not has_deficiency:
+                    reason.append("no deficiency detected")
+                result["food_suggestions_skipped"] = ", ".join(reason)
         
         results.append(result)
     
@@ -189,6 +207,8 @@ def main():
                 }))
             elif "food_suggestions_error" in r:
                 print(f"\nError getting food suggestions: {r['food_suggestions_error']}")
+            elif "food_suggestions_skipped" in r:
+                print(f"\nFood suggestions skipped: {r['food_suggestions_skipped']}")
             print("\n")
 
 if __name__ == "__main__":
