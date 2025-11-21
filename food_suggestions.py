@@ -217,7 +217,7 @@ def format_suggestions_output(result: Dict[str, str]) -> str:
         output.append("\nStatus: No deficiency detected (Healthy)")
     
     output.append("\n" + "-" * 60)
-    output.append("AI Recommendations:")
+    output.append("Food Recommendations:")
     output.append("-" * 60)
     output.append(result["suggestions"])
     output.append("\n" + "=" * 60)
