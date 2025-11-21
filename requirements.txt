@@ -6,3 +6,6 @@ Pillow
 scikit-learn 
 google-generativeai
 python-dotenv 
+onnxruntime
+onnx
+onnxscript
