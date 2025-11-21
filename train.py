@@ -8,7 +8,7 @@ import numpy as np
 
 DATA_ROOT = "dataset"
 BATCH_SIZE = 16
-NUM_EPOCHS = 15
+NUM_EPOCHS = 25
 LR = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
