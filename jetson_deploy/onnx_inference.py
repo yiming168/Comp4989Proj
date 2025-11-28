@@ -88,6 +88,7 @@ def get_transform() -> transforms.Compose:
         [
             transforms.Resize((256, 256)),
             transforms.CenterCrop(224),
+            transforms.Grayscale(num_output_channels=3),
             transforms.ToTensor(),
             transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
         ]
