@@ -391,7 +391,8 @@ def run_single_image(
 ) -> None:
     pil_img = Image.open(args.image).convert("RGB")
     grad_dir = args.save_dir if args.grad_cam else None
-    result, _ = analyze_image(
+# 1. Capture the image variable instead of "_"
+    result, grad_cam_img = analyze_image(
         pil_img=pil_img,
         image_id=args.image,
         classes=classes,
@@ -411,6 +412,12 @@ def run_single_image(
     )
 
     print(json.dumps(result, indent=2))
+
+    # 2. Add this block to show the window
+    if args.grad_cam and grad_cam_img is not None:
+        cv2.imshow("Result (Press any key to exit)", grad_cam_img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     if result.get("food_suggestions"):
         print(
             format_suggestions_output(
