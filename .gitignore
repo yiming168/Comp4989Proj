@@ -211,5 +211,6 @@ __marimo__/
 data/
 dataset/
 final_dataset/
+best_model.pth
 .venv311/
 
