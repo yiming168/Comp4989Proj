@@ -114,10 +114,21 @@ def run_epoch(loader, train: bool):
 def main() -> None:
     best_val_f1 = 0.0
     best_model_path = "best_model.pth"
+    history = {
+        "train_loss": [],
+        "val_loss": [],
+        "train_f1": [],
+        "val_f1": [],
+    }
 
     for epoch in range(1, NUM_EPOCHS + 1):
         train_loss, train_acc, train_f1 = run_epoch(train_loader, train=True)
         val_loss, val_acc, val_f1 = run_epoch(val_loader, train=False)
+
+        history["train_loss"].append(train_loss)
+        history["val_loss"].append(val_loss)
+        history["train_f1"].append(train_f1)
+        history["val_f1"].append(val_f1)
 
         print(f"Epoch {epoch:02d}:")
         print(f"  Train: loss={train_loss:.4f}, acc={train_acc:.3f}, macroF1={train_f1:.3f}")
@@ -129,6 +140,16 @@ def main() -> None:
             print(f"  >> New best model saved with val macroF1={best_val_f1:.3f}")
 
     print("Training done. Best val macroF1:", best_val_f1)
+
+    # Save training history for plotting (Figure 2)
+    np.savez(
+        "training_history.npz",
+        train_loss=np.array(history["train_loss"], dtype=float),
+        val_loss=np.array(history["val_loss"], dtype=float),
+        train_f1=np.array(history["train_f1"], dtype=float),
+        val_f1=np.array(history["val_f1"], dtype=float),
+    )
+    print("Saved training history to training_history.npz")
 
     # 6. evaluate on test set
     model.load_state_dict(torch.load(best_model_path, map_location=DEVICE))
