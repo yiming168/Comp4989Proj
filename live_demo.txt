@@ -1,0 +1,47 @@
+* Camera
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py \
+  --camera \
+  --camera-index 1 \
+  --model jetson_deploy/model.onnx \
+  --weights best_model.pth \
+  --classes jetson_deploy/classes.json \
+  --grad-cam \
+  --suggestions
+
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py --camera --camera-index 1 --model jetson_deploy/model.onnx --weights best_model.pth --classes jetson_deploy/classes.json --grad-cam --suggestions
+
+
+* Vitamin A
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py \
+  --image testset/Class_01_Vitamin_A_Bitots_Spot/eye_with_spot_23.png \
+  --model jetson_deploy/model.onnx \
+  --weights best_model.pth \
+  --classes jetson_deploy/classes.json \
+  --grad-cam \
+  --suggestions
+
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py --image testset/Class_01_Vitamin_A_Bitots_Spot/eye_with_spot_23.png --model jetson_deploy/model.onnx --weights best_model.pth --classes jetson_deploy/classes.json --grad-cam --suggestions
+
+
+* Iron
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py \
+  --image testset/Class_02_Iron_Koilonychia/spoon_nail_20.png \
+  --model jetson_deploy/model.onnx \
+  --weights best_model.pth \
+  --classes jetson_deploy/classes.json \
+  --grad-cam \
+  --suggestions
+
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py --image testset/Class_02_Iron_Koilonychia/spoon_nail_20.png --model jetson_deploy/model.onnx --weights best_model.pth --classes jetson_deploy/classes.json --grad-cam --suggestions
+
+
+* Zinc
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py \
+  --image testset/Class_08_Zinc_Deficiency_Acrodermatitis/Acrodermatitis_26.jpg \
+  --model jetson_deploy/model.onnx \
+  --weights best_model.pth \
+  --classes jetson_deploy/classes.json \
+  --grad-cam \
+  --suggestions
+
+/usr/local/bin/python3.11 jetson_deploy/onnx_inference.py --image testset/Class_08_Zinc_Deficiency_Acrodermatitis/Acrodermatitis_26.jpg --model jetson_deploy/model.onnx --weights best_model.pth --classes jetson_deploy/classes.json --grad-cam --suggestions

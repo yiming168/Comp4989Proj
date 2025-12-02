@@ -5,6 +5,7 @@ Uses AI Studio (Google Gemini API) to generate food suggestions based on nutriti
 
 import os
 import json
+import re
 from typing import Dict, Optional, List
 from pathlib import Path
 
@@ -112,6 +113,21 @@ Keep the response concise, practical, and easy to understand. Format as a clear 
     return prompt
 
 
+def strip_markdown(text: str) -> str:
+    """Remove common Markdown markers so suggestions render cleanly."""
+    # Drop bold/italic markers
+    text = re.sub(r"(\*{1,3}|_{1,3})(.*?)\1", r"\2", text)
+    # Drop heading markers
+    text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.MULTILINE)
+    # Normalize bullet markers
+    text = re.sub(r"^\s*[-*+]\s+", "- ", text, flags=re.MULTILINE)
+    # Remove stray backticks
+    text = text.replace("`", "")
+    # Remove any remaining asterisks (often appear after colons in responses)
+    text = text.replace("*", "")
+    return text.strip()
+
+
 def initialize_ai_client(api_key: Optional[str] = None) -> genai.GenerativeModel:
     """
     Initialize the Google Gemini AI client.
@@ -190,7 +206,7 @@ def get_food_suggestions(
     
     try:
         response = model.generate_content(prompt)
-        suggestions_text = response.text
+        suggestions_text = strip_markdown(response.text)
         
         return {
             "suggestions": suggestions_text,

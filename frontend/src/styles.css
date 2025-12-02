@@ -329,7 +329,7 @@ input[type='range'] {
 
 .suggestions pre {
   white-space: pre-wrap;
-  font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: inherit;
   color: var(--text);
   margin: 0;
   line-height: 1.5;
