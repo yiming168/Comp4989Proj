@@ -10,6 +10,7 @@ DATA_ROOT = "dataset"
 BATCH_SIZE = 16
 NUM_EPOCHS = 25
 LR = 1e-4
+PATIENCE = 5
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # 1. data preprocessing
@@ -114,6 +115,8 @@ def run_epoch(loader, train: bool):
 def main() -> None:
     best_val_f1 = 0.0
     best_model_path = "best_model.pth"
+    best_epoch = 0
+    epochs_no_improve = 0
     history = {
         "train_loss": [],
         "val_loss": [],
@@ -136,8 +139,16 @@ def main() -> None:
 
         if val_f1 > best_val_f1:
             best_val_f1 = val_f1
+            best_epoch = epoch
+            epochs_no_improve = 0
             torch.save(model.state_dict(), best_model_path)
             print(f"  >> New best model saved with val macroF1={best_val_f1:.3f}")
+        else:
+            epochs_no_improve += 1
+            print(f"  No improvement for {epochs_no_improve} epoch(s) (patience={PATIENCE})")
+            if epochs_no_improve >= PATIENCE:
+                print(f"Early stopping triggered at epoch {epoch:02d}. Best epoch was {best_epoch:02d}.")
+                break
 
     print("Training done. Best val macroF1:", best_val_f1)
 
